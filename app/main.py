@@ -1,9 +1,7 @@
 from flask import Flask, request, jsonify
 
-# production
-from app.torch_utils import transform_image, get_prediction
-# dev
-# from torch_utils import transform_image, get_prediction
+from app.torch_utils import transform_image, get_prediction # production
+# from torch_utils import transform_image, get_prediction # dev
 
 app = Flask(__name__)
 
@@ -15,7 +13,6 @@ def allowed_file(filename):
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # print('inside predict')
     if request.method == 'POST':
         file = request.files.get('file')
         if file is None or file.filename == "":
@@ -27,14 +24,7 @@ def predict():
             img_bytes = file.read()
             tensor = transform_image(img_bytes)
             predicted_class_name = get_prediction(tensor)
-            # print('here')
-            # print(_)
-            # print(prediction)
-            # data = {'prediction': prediction.item(), 'class_name': str(prediction.item())}
             data = {'predicted class': predicted_class_name}
             return jsonify(data)
         except:
-            # print(e)
-            # print('here')
             return jsonify({'error': 'error during prediction'})
-            # return jsonify({'error': f'{e} error during prediction'})
